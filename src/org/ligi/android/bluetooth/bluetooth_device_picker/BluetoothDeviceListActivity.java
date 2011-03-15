@@ -65,8 +65,8 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 
 	public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
 		Intent result_intent=new Intent();
-		result_intent.putExtra(RESULT_TAG_BT_ADDR, ""+((RemoteDevice)(arg0.getAdapter().getItem(pos))).getAddress());
-		result_intent.putExtra(RESULT_TAG_BT_FRIENDLYNAME, ""+((RemoteDevice)(arg0.getAdapter().getItem(pos))).getFriendlyName());
+		result_intent.putExtra(RESULT_TAG_BT_ADDR, ""+((BluetoothDevice)(arg0.getAdapter().getItem(pos))).getAddr());
+		result_intent.putExtra(RESULT_TAG_BT_FRIENDLYNAME, ""+((BluetoothDevice)(arg0.getAdapter().getItem(pos))).getFriendlyName());
 		this.setResult(Activity.RESULT_OK, result_intent);
 		finish();
 	}
