@@ -171,12 +171,10 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 		}
 	}
 	
-	@Override
 	public void onCancel(DialogInterface dialog) {
 		finish();
 	}
 
-	@Override
 	public void onClick(DialogInterface dialog, int which) {
 		finish();
 	}
