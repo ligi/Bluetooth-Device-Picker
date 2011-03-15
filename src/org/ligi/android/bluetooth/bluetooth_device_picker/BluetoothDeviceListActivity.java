@@ -1,5 +1,7 @@
 package org.ligi.android.bluetooth.bluetooth_device_picker;
 
+import java.util.HashMap;
+
 import it.gerdavax.easybluetooth.LocalDevice;
 import it.gerdavax.easybluetooth.ReadyListener;
 import it.gerdavax.easybluetooth.RemoteDevice;
@@ -18,8 +20,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,7 +35,7 @@ import android.widget.AdapterView.OnItemClickListener;
  * TODO: - persist found ones  
  *       - sort by FoundCount
  *       - mark found ones in list vs persisted ones
- *       - Continuous scan with marking the recent found ones
+ *       - mark recently found ones found ones
  * 
  * @author ligi ( aka: Marcus Bueschleb | mail: ligi at ligi dot de )
  *
@@ -43,20 +43,85 @@ import android.widget.AdapterView.OnItemClickListener;
  */
 public class BluetoothDeviceListActivity extends ListActivity implements OnCancelListener, OnClickListener,  OnItemClickListener {
 	
-	private static final int MENU_SCAN = 0;
 	private myArrayAdapter arrayAdapter;
 	private ProgressDialog progress_dialog;
-	private boolean scanning=false;
 	public final static String RESULT_TAG_BT_ADDR="ADDR";
 	public final static String RESULT_TAG_BT_FRIENDLYNAME="FRIENDLYNAME";
-	
-	private class myArrayAdapter extends ArrayAdapter<RemoteDevice>{
+	private boolean stopped=false;
 
+	public int scan_round=1;
+	
+	public class BluetoothDevice {
+		private String addr="";
+		private String friendly_name="";
+		private int seen_in_round=-1; // not seen
+		
+		public BluetoothDevice(RemoteDevice rd,int act_scan_round) {
+			addr=rd.getAddress();
+			friendly_name=rd.getFriendlyName();
+			seen_in_round=act_scan_round;
+		}
+		
+		public BluetoothDevice(String friendly_name,String addr) {
+			this.friendly_name=friendly_name;
+			this.addr=addr;
+		}
+		
+		/**
+		 * updates friendly name if not present info
+		 * and ors recently seen with this
+		 * 
+		 * @param bd
+		 */
+		public void updateFriendlyAndSeen(BluetoothDevice bd,int act_scan_round) {
+			if (this.getFriendlyName()=="")
+				this.friendly_name=bd.getFriendlyName();
+			seen_in_round=act_scan_round;
+		}
+		
+		public String getAddr() {
+			return addr;
+		}
+		
+		public String getFriendlyName() {
+			return friendly_name;
+		}
+		
+		public int getSeenRound(){
+			return seen_in_round;
+		}
+	}
+	
+	private class myArrayAdapter extends ArrayAdapter<BluetoothDevice>{
+
+		private HashMap<String,Integer> mac2id; // String is mac
+		
 		private Context context;
 		
 		public myArrayAdapter(Context context, int textViewResourceId) {
+		
 			super(context, textViewResourceId);
+			mac2id=new HashMap<String,Integer>();
 			this.context=context;
+		}
+
+		@Override
+		public void add(BluetoothDevice object) {
+			if (mac2id.containsKey(object.getAddr())) {
+				getItem(mac2id.get(object.getAddr())).updateFriendlyAndSeen(object,scan_round);
+				super.notifyDataSetChanged();
+			}
+			else			
+				super.add(object);
+			
+			mac2id.put(object.getAddr(),this.getCount()-1);
+			
+		}
+
+		@Override
+		public BluetoothDevice getItem(int position) {
+			// TODO Auto-generated method stub
+			return super.getItem(position);
 		}
 
 		@Override
@@ -68,7 +133,7 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 			label.setTextSize(TypedValue.COMPLEX_UNIT_MM , 12f); // 1.2cm
             label=(TextView)row.findViewById(android.R.id.text2);
             label.setTextSize(TypedValue.COMPLEX_UNIT_MM , 6.0f); // 6mm -> so ~2cm together -> easy touchable 
-			label.setText(getItem(position).getAddress() + getItem(position).getRSSI());
+			label.setText(getItem(position).getAddr() + "--" + getItem(position).getSeenRound());
 	        return row;
 		}
 	}
@@ -78,6 +143,8 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 	    super.onCreate(savedInstanceState);
 	    Log.i("starting scan activity");
 
+	    
+	    
 		progress_dialog=new ProgressDialog(this);
 		progress_dialog.setMessage("Switching on Bluetooth ..");
 		progress_dialog.setTitle("Bluetooth");
@@ -105,68 +172,40 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 
 	 @Override
 	protected void onDestroy() {
-		LocalDevice.getInstance().stopScan();
-		progress_dialog.dismiss();
-		super.onDestroy();
+		 stopped=true; // to prevent scan restart 
+		 LocalDevice.getInstance().stopScan();
+		 progress_dialog.dismiss();
+		 super.onDestroy();
 	}
 		
 	private class myReadyListener extends ReadyListener {
 		@Override
 		public void ready() {
-			scanning=true;
 			LocalDevice.getInstance().scan(new myScanListener());
 			progress_dialog.setMessage("Waiting for at least one device");
 		}
 	}
-
-	/* Creates the menu items */
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
-	    
-		if (!scanning) 
-			menu.add(0,MENU_SCAN,0,"Scan again").setIcon(android.R.drawable.ic_menu_rotate);
-		else 
-			menu.add(0,MENU_SCAN,0,"Stop Scan").setIcon(android.R.drawable.ic_menu_close_clear_cancel);
-		
-	    return true;
-	}
-
-	/* Handles item selections */
-	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	    	case MENU_SCAN:
-	    		if (scanning) 
-	    			LocalDevice.getInstance().stopScan();
-	    		
-	    		progress_dialog.show();
-	    		arrayAdapter.clear();
-	    		scanning=true;
-	    		LocalDevice.getInstance().scan(new myScanListener());	
-	    		break;
-	    }
-	    return false;
-	}
-
+	
 	private class myScanListener extends ScanListener {
 
 		@Override
 		public void deviceFound(RemoteDevice remote_device) {
 			progress_dialog.hide();
 			Log.i("Bluetooth Device found: friendly_name=" + remote_device.getFriendlyName() + " / mac=" + remote_device.getAddress() + " / rssi: " + remote_device.getRSSI() );
-			arrayAdapter.add(remote_device);
+			arrayAdapter.add(new BluetoothDevice(remote_device,scan_round));;
 		}
 
 		@Override
 		public void scanCompleted() {
 			Log.i("Bluetooth Scan Completed");
-			Toast.makeText(BluetoothDeviceListActivity.this, "Scan Completed", Toast.LENGTH_SHORT).show(); 
-
-			if (arrayAdapter.getCount()>0) {
-				scanning=false;
-			}
-			else {
-				progress_dialog.setMessage("No Device found - trying again");
-				LocalDevice.getInstance().scan(new myScanListener());	
+			if (stopped) {
+				Toast.makeText(BluetoothDeviceListActivity.this, "Disable Bluetooth Scan", Toast.LENGTH_SHORT).show(); 	
+			} else {
+				Toast.makeText(BluetoothDeviceListActivity.this, "New Scan", Toast.LENGTH_SHORT).show();
+				if (arrayAdapter.getCount()==0) 
+					progress_dialog.setMessage("No Device found - trying again");
+				LocalDevice.getInstance().scan(new myScanListener());
+				scan_round++;
 			}
 		}
 	}
