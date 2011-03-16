@@ -15,13 +15,22 @@ public class BluetoothDevice {
 	
 	public BluetoothDevice(RemoteDevice rd,int act_scan_round) {
 		addr=rd.getAddress();
-		friendly_name=rd.getFriendlyName();
+		setFriendlyName(rd.getFriendlyName());
 		seen_in_round=act_scan_round;
 	}
 	
+	public void setFriendlyName(String new_fn) {
+		if (!new_fn.equals(""))
+			friendly_name=new_fn;
+		else
+			if (friendly_name.equals(""))
+				friendly_name=getAddr();
+				
+	}
 	public BluetoothDevice(String friendly_name,String addr) {
-		this.friendly_name=friendly_name;
+		
 		this.addr=addr;
+		setFriendlyName(friendly_name);
 	}
 	
 	/**
@@ -31,7 +40,7 @@ public class BluetoothDevice {
 	 * @param bd
 	 */
 	public void updateFriendlyAndSeen(BluetoothDevice bd,int act_scan_round) {
-		if (this.getFriendlyName()=="")
+		if (this.getFriendlyName().equals(""))
 			this.friendly_name=bd.getFriendlyName();
 		seen_in_round=act_scan_round;
 	}
