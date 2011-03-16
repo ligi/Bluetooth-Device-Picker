@@ -2,12 +2,15 @@ package org.ligi.android.bluetooth.bluetooth_device_picker;
 
 import java.util.HashMap;
 
+import org.ligi.tracedroid.logging.Log;
+
 import android.content.Context;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -21,12 +24,13 @@ public class BluetoothArrayAdapter extends ArrayAdapter<BluetoothDevice>{
 
 		private static BluetoothArrayAdapter instance=null;
 		private HashMap<String,Integer> mac2id; // String is mac
-		private Context context;
+		private Context myContext;
+		private int last_seen_round=-1;
 		
 		public BluetoothArrayAdapter(Context context, int textViewResourceId) {
 			super(context, textViewResourceId);
 			mac2id=new HashMap<String,Integer>();
-			this.context=context;
+			this.myContext=context;
 		}
 		
 		public static BluetoothArrayAdapter getInstance() {
@@ -38,28 +42,56 @@ public class BluetoothArrayAdapter extends ArrayAdapter<BluetoothDevice>{
 				instance=new BluetoothArrayAdapter(c,resid);
 		}
 
+		public void dump_hash(HashMap<String,Integer> hm) {
+			for (String key : hm.keySet())
+				Log.i("found " + key + "->" + hm.get(key).intValue());
+		}
+		
 		@Override
 		public void add(BluetoothDevice object) {
+			last_seen_round=Math.max(last_seen_round, object.getSeenRound());
 			if (mac2id.containsKey(object.getAddr())) {
+				Log.i("found update" + mac2id.get(object.getAddr()));
+				dump_hash(mac2id);
 				getItem(mac2id.get(object.getAddr())).updateFriendlyAndSeen(object,object.getSeenRound());
 				super.notifyDataSetChanged();
 			}
-			else			
+			else {
 				super.add(object);
-			
-			mac2id.put(object.getAddr(),this.getCount()-1);
+				mac2id.put(object.getAddr(),this.getCount()-1);
+			}
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			LayoutInflater vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row=vi.inflate(android.R.layout.two_line_list_item, null); 
-            TextView label=(TextView)row.findViewById(android.R.id.text1); 
-			label.setText(getItem(position).getFriendlyName() );
-			label.setTextSize(TypedValue.COMPLEX_UNIT_MM , 12f); // 1.2cm
-            label=(TextView)row.findViewById(android.R.id.text2);
-            label.setTextSize(TypedValue.COMPLEX_UNIT_MM , 6.0f); // 6mm -> so ~2cm together -> easy touchable 
-			label.setText(getItem(position).getAddr() + "--" + getItem(position).getSeenRound());
+			BluetoothDevice bd=getItem(position);
+			
+			LinearLayout row=new LinearLayout(myContext);
+			row.setOrientation(LinearLayout.VERTICAL);
+			
+			
+			LinearLayout name_and_icon=new LinearLayout(myContext);
+			name_and_icon.setOrientation(LinearLayout.HORIZONTAL);
+			
+			TextView friendly_name_tv=new TextView(myContext);
+			
+			friendly_name_tv.setText(bd.getFriendlyName() );
+			friendly_name_tv.setTextSize(TypedValue.COMPLEX_UNIT_MM , 12f); // 1.2cm
+			name_and_icon.addView(friendly_name_tv);
+			ImageView view_img=new ImageView(myContext);
+			view_img.setImageResource(android.R.drawable.ic_menu_view);
+			
+			if (bd.getSeenRound()>last_seen_round-1)
+				name_and_icon.addView(view_img);
+			
+			row.addView(name_and_icon);
+			TextView addr_tv=new TextView(myContext);
+			
+			addr_tv.setText(bd.getAddr());
+			addr_tv.setTextSize(TypedValue.COMPLEX_UNIT_MM , 6f); // 1.2cm
+			
+			row.addView(addr_tv);
+			
 	        return row;
 		}
 	}
