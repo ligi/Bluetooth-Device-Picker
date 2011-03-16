@@ -26,7 +26,6 @@ import android.widget.AdapterView.OnItemClickListener;
  * TODO: - persist found ones  
  *       - sort by FoundCount
  *       - mark found ones in list vs persisted ones
- *       - mark recently found ones found ones
  * 
  * @author ligi ( aka: Marcus Bueschleb | mail: ligi at ligi dot de )
  *
