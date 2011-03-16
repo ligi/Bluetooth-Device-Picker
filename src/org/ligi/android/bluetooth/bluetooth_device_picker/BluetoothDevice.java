@@ -12,6 +12,7 @@ public class BluetoothDevice {
 	private String addr="";
 	private String friendly_name="";
 	private int seen_in_round=-1; // not seen
+	private boolean saved=false;
 	
 	public BluetoothDevice(RemoteDevice rd,int act_scan_round) {
 		addr=rd.getAddress();
@@ -27,10 +28,16 @@ public class BluetoothDevice {
 				friendly_name=getAddr();
 				
 	}
+
 	public BluetoothDevice(String friendly_name,String addr) {
-		
 		this.addr=addr;
 		setFriendlyName(friendly_name);
+	}
+	
+	public BluetoothDevice(String friendly_name,String addr,boolean saved) {
+		this.addr=addr;
+		setFriendlyName(friendly_name);
+		setSaved(saved);
 	}
 	
 	/**
@@ -55,5 +62,13 @@ public class BluetoothDevice {
 	
 	public int getSeenRound(){
 		return seen_in_round;
+	}
+
+	public void setSaved(boolean saved) {
+		this.saved = saved;
+	}
+
+	public boolean isSaved() {
+		return saved;
 	}
 }

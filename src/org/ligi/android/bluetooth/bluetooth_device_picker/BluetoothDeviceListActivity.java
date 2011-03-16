@@ -1,17 +1,19 @@
 package org.ligi.android.bluetooth.bluetooth_device_picker;
 
+import org.ligi.tracedroid.TraceDroid;
+import org.ligi.tracedroid.logging.Log;
+import org.ligi.tracedroid.sending.TraceDroidEmailSender;
+
 import it.gerdavax.easybluetooth.LocalDevice;
 import it.gerdavax.easybluetooth.ReadyListener;
 import it.gerdavax.easybluetooth.RemoteDevice;
 import it.gerdavax.easybluetooth.ScanListener;
-
-import org.ligi.tracedroid.Log;
-
 import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
@@ -23,9 +25,9 @@ import android.widget.AdapterView.OnItemClickListener;
 /**
  * Activity to scan for bluetooth devices and list them
  * 
- * TODO: - persist found ones  
- *       - sort by FoundCount
- *       - mark found ones in list vs persisted ones
+ * TODO: - store SelectedCount & sort by SelectedCount
+ *       - drop devices ( long press )
+ *       - style icons ( size ) 
  * 
  * @author ligi ( aka: Marcus Bueschleb | mail: ligi at ligi dot de )
  *
@@ -43,6 +45,10 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+	    Log.setTAG("BluetoothDevicePicker");
+	    TraceDroid.init(this);
+	    TraceDroidEmailSender.sendStackTraces("ligi@ligi.de", this);
+	    
 	    Log.i("starting scan activity");
 	    
 		progress_dialog=new ProgressDialog(this);
@@ -58,14 +64,26 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 		this.getListView().setAdapter(BluetoothArrayAdapter.getInstance());
 		this.getListView().setOnItemClickListener(this);
 		
+		for (String key : getSavedDevicesSharedPreferences().getAll().keySet())
+			BluetoothArrayAdapter.getInstance().add(new BluetoothDevice(getSavedDevicesSharedPreferences().getString(key,""),key,true));
+		
 		if (BluetoothArrayAdapter.getInstance().getCount()<1)
 			progress_dialog.show();
 	}
 
+	public SharedPreferences getSavedDevicesSharedPreferences() {
+		return this.getSharedPreferences("saved_devices", 0);
+	}
+	
 	public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+		BluetoothDevice bd=(BluetoothDevice)arg0.getAdapter().getItem(pos);
+		SharedPreferences sp=getSavedDevicesSharedPreferences();
+		if (!sp.contains(bd.getAddr()))
+			sp.edit().putString(bd.getAddr(), bd.getFriendlyName()).commit();
+		
 		Intent result_intent=new Intent();
-		result_intent.putExtra(RESULT_TAG_BT_ADDR, ""+((BluetoothDevice)(arg0.getAdapter().getItem(pos))).getAddr());
-		result_intent.putExtra(RESULT_TAG_BT_FRIENDLYNAME, ""+((BluetoothDevice)(arg0.getAdapter().getItem(pos))).getFriendlyName());
+		result_intent.putExtra(RESULT_TAG_BT_ADDR, bd.getAddr());
+		result_intent.putExtra(RESULT_TAG_BT_FRIENDLYNAME, bd.getFriendlyName());
 		this.setResult(Activity.RESULT_OK, result_intent);
 		finish();
 	}
@@ -74,6 +92,7 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 	protected void onDestroy() {
 		 stopped=true; // to prevent scan restart 
 		 LocalDevice.getInstance().stopScan();
+		 LocalDevice.getInstance().destroy();
 		 progress_dialog.dismiss();
 		 super.onDestroy();
 	}

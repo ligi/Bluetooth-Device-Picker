@@ -1,9 +1,6 @@
 package org.ligi.android.bluetooth.bluetooth_device_picker;
 
 import java.util.HashMap;
-
-import org.ligi.tracedroid.logging.Log;
-
 import android.content.Context;
 import android.util.TypedValue;
 import android.view.View;
@@ -41,18 +38,11 @@ public class BluetoothArrayAdapter extends ArrayAdapter<BluetoothDevice>{
 			if (instance==null)
 				instance=new BluetoothArrayAdapter(c,resid);
 		}
-
-		public void dump_hash(HashMap<String,Integer> hm) {
-			for (String key : hm.keySet())
-				Log.i("found " + key + "->" + hm.get(key).intValue());
-		}
 		
 		@Override
 		public void add(BluetoothDevice object) {
 			last_seen_round=Math.max(last_seen_round, object.getSeenRound());
 			if (mac2id.containsKey(object.getAddr())) {
-				Log.i("found update" + mac2id.get(object.getAddr()));
-				dump_hash(mac2id);
 				getItem(mac2id.get(object.getAddr())).updateFriendlyAndSeen(object,object.getSeenRound());
 				super.notifyDataSetChanged();
 			}
@@ -78,11 +68,19 @@ public class BluetoothArrayAdapter extends ArrayAdapter<BluetoothDevice>{
 			friendly_name_tv.setText(bd.getFriendlyName() );
 			friendly_name_tv.setTextSize(TypedValue.COMPLEX_UNIT_MM , 12f); // 1.2cm
 			name_and_icon.addView(friendly_name_tv);
+			
+			ImageView saved_img=new ImageView(myContext);
+			saved_img.setImageResource(android.R.drawable.ic_menu_save);
+			
+			if (bd.isSaved())
+				name_and_icon.addView(saved_img);
+			
 			ImageView view_img=new ImageView(myContext);
 			view_img.setImageResource(android.R.drawable.ic_menu_view);
 			
 			if (bd.getSeenRound()>last_seen_round-1)
 				name_and_icon.addView(view_img);
+			
 			
 			row.addView(name_and_icon);
 			TextView addr_tv=new TextView(myContext);
