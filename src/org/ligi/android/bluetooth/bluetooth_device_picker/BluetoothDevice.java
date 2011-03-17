@@ -9,10 +9,11 @@ import it.gerdavax.easybluetooth.RemoteDevice;
  * Licence: GPLv3  
  */
 public class BluetoothDevice {
-	private String addr="";
-	private String friendly_name="";
-	private int seen_in_round=-1; // not seen
-	private boolean saved=false;
+	
+	private String addr=""; // mac address
+	private String friendly_name=""; // human readable name
+	private int seen_in_round=-1; // -1 -> not seen
+	private boolean saved=false; // remember if it was saved 
 	
 	public BluetoothDevice(RemoteDevice rd,int act_scan_round) {
 		addr=rd.getAddress();
