@@ -45,6 +45,7 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+	    
 	    Log.setTAG("BluetoothDevicePicker");
 	    TraceDroid.init(this);
 	    TraceDroidEmailSender.sendStackTraces("ligi@ligi.de", this);
@@ -52,11 +53,11 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 	    Log.i("starting scan activity");
 	    
 		progress_dialog=new ProgressDialog(this);
-		progress_dialog.setMessage("Switching on Bluetooth ..");
-		progress_dialog.setTitle("Bluetooth");
+		progress_dialog.setMessage(getString(R.string.switching_on_bt));
+		progress_dialog.setTitle(R.string.bluetooth);
 		progress_dialog.setCancelable(false);
 		progress_dialog.setOnCancelListener(this);
-		progress_dialog.setButton("Cancel", this);
+		progress_dialog.setButton(getString(R.string.Cancel), this);
 
 		LocalDevice.getInstance().init(this, new myReadyListener());
 		
@@ -101,7 +102,7 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 		@Override
 		public void ready() {
 			LocalDevice.getInstance().scan(new myScanListener());
-			progress_dialog.setMessage("Waiting for at least one device");
+			progress_dialog.setMessage(getString(R.string.initial_wait));
 		}
 	}
 	
@@ -118,11 +119,11 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 		public void scanCompleted() {
 			Log.i("Bluetooth Scan Completed");
 			if (stopped) {
-				Toast.makeText(BluetoothDeviceListActivity.this, "Disable Bluetooth Scan", Toast.LENGTH_SHORT).show(); 	
+				Toast.makeText(BluetoothDeviceListActivity.this, R.string.disable_bt_scan, Toast.LENGTH_SHORT).show(); 	
 			} else {
-				Toast.makeText(BluetoothDeviceListActivity.this, "New Scan", Toast.LENGTH_SHORT).show();
+				Toast.makeText(BluetoothDeviceListActivity.this, R.string.new_scan, Toast.LENGTH_SHORT).show();
 				if (BluetoothArrayAdapter.getInstance().getCount()==0) 
-					progress_dialog.setMessage("No Device found - trying again");
+					progress_dialog.setMessage(getString(R.string.no_device_found));
 				LocalDevice.getInstance().scan(new myScanListener());
 				scan_round++;
 			}

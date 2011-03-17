@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World!</string>
     <string name="app_name">Bluetooth Device Select</string>
+    <string name="new_scan">New Scan</string>
+    <string name="no_device_found">No Device found - trying again</string>
+    <string name="disable_bt_scan">Disable Bluetooth Scan</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="switching_on_bt">Switching on Bluetooth ..</string>
+    <string name="Cancel">Cancel</string>
+    <string name="OK">ok</string>
+    <string name="initial_wait">Waiting for at least one device</string>
 </resources>
