@@ -61,7 +61,6 @@ public class BluetoothArrayAdapter extends ArrayAdapter<BluetoothDevice>{
 			LinearLayout row=new LinearLayout(myContext);
 			row.setOrientation(LinearLayout.VERTICAL);
 			
-			
 			LinearLayout name_and_icon=new LinearLayout(myContext);
 			name_and_icon.setOrientation(LinearLayout.HORIZONTAL);
 			
@@ -82,9 +81,8 @@ public class BluetoothArrayAdapter extends ArrayAdapter<BluetoothDevice>{
 			orig=BitmapFactory.decodeResource(myContext.getResources(), android.R.drawable.ic_menu_view);
 			view_img.setImageBitmap(Bitmap.createScaledBitmap(orig, (int)((friendly_name_tv.getTextSize()/orig.getHeight())*orig.getWidth()), (int)friendly_name_tv.getTextSize(),false));
 			
-			if (bd.getSeenRound()>last_seen_round-1)
+			if (bd.getSeenRound()>Math.max(last_seen_round-1,0))
 				name_and_icon.addView(view_img);
-			
 			
 			row.addView(name_and_icon);
 			TextView addr_tv=new TextView(myContext);
