@@ -27,7 +27,6 @@ import android.widget.AdapterView.OnItemClickListener;
  * 
  * TODO: - store SelectedCount & sort by SelectedCount
  *       - drop devices ( long press )
- *       - style icons ( size ) 
  * 
  * @author ligi ( aka: Marcus Bueschleb | mail: ligi at ligi dot de )
  *
