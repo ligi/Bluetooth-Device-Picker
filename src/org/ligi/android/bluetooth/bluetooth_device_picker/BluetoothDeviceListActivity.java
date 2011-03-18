@@ -63,6 +63,7 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 		
 		BluetoothArrayAdapter.construct_instance(this, android.R.layout.simple_list_item_1);
 		this.getListView().setAdapter(BluetoothArrayAdapter.getInstance());
+		
 		this.getListView().setOnItemClickListener(this);
 		
 		for (String key : getSavedDevicesSharedPreferences().getAll().keySet())
@@ -92,7 +93,7 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 	 @Override
 	protected void onDestroy() {
 		 stopped=true; // to prevent scan restart 
-		 LocalDevice.getInstance().stopScan();
+		 //LocalDevice.getInstance().stopScan();
 		 progress_dialog.dismiss();
 		 super.onDestroy();
 	}
