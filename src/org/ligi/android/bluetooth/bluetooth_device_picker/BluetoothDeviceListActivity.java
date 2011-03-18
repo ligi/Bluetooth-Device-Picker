@@ -93,7 +93,6 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 	protected void onDestroy() {
 		 stopped=true; // to prevent scan restart 
 		 LocalDevice.getInstance().stopScan();
-		 LocalDevice.getInstance().destroy();
 		 progress_dialog.dismiss();
 		 super.onDestroy();
 	}
