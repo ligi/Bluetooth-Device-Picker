@@ -2,6 +2,8 @@ package org.ligi.android.bluetooth.bluetooth_device_picker;
 
 import java.util.HashMap;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,13 +72,15 @@ public class BluetoothArrayAdapter extends ArrayAdapter<BluetoothDevice>{
 			name_and_icon.addView(friendly_name_tv);
 			
 			ImageView saved_img=new ImageView(myContext);
-			saved_img.setImageResource(android.R.drawable.ic_menu_save);
+			Bitmap orig=BitmapFactory.decodeResource(myContext.getResources(), android.R.drawable.ic_menu_save);
+			saved_img.setImageBitmap(Bitmap.createScaledBitmap(orig, (int)((friendly_name_tv.getTextSize()/orig.getHeight())*orig.getWidth()), (int)friendly_name_tv.getTextSize(),false));
 			
 			if (bd.isSaved())
 				name_and_icon.addView(saved_img);
 			
 			ImageView view_img=new ImageView(myContext);
-			view_img.setImageResource(android.R.drawable.ic_menu_view);
+			orig=BitmapFactory.decodeResource(myContext.getResources(), android.R.drawable.ic_menu_view);
+			view_img.setImageBitmap(Bitmap.createScaledBitmap(orig, (int)((friendly_name_tv.getTextSize()/orig.getHeight())*orig.getWidth()), (int)friendly_name_tv.getTextSize(),false));
 			
 			if (bd.getSeenRound()>last_seen_round-1)
 				name_and_icon.addView(view_img);
