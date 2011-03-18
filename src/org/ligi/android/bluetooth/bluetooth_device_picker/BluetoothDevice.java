@@ -43,14 +43,14 @@ public class BluetoothDevice {
 	
 	/**
 	 * updates friendly name if not present info
-	 * and updates seen_in_round
+	 * and updates seen_in_round if new val is bigger
 	 * 
 	 * @param bd
 	 */
 	public void updateFriendlyAndSeen(BluetoothDevice bd,int act_scan_round) {
 		if (this.getFriendlyName().equals(""))
 			this.friendly_name=bd.getFriendlyName();
-		seen_in_round=act_scan_round;
+		seen_in_round=Math.max(seen_in_round,act_scan_round);
 	}
 	
 	public String getAddr() {
