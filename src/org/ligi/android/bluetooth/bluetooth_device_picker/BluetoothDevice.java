@@ -43,7 +43,7 @@ public class BluetoothDevice {
 	
 	/**
 	 * updates friendly name if not present info
-	 * and ors recently seen with this
+	 * and updates seen_in_round
 	 * 
 	 * @param bd
 	 */
