@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.ligi.android.bluetooth.bluetooth_device_picker"
-      android:versionCode="2"
-      android:versionName="0.2">
+      android:versionCode="3"
+      android:versionName="0.3">
       
 	<uses-sdk android:targetSdkVersion="3" android:minSdkVersion="4"></uses-sdk>
 	
@@ -19,6 +19,10 @@
             <intent-filter>
                 <action android:name="PICK_BLUETOOTH_DEVICE"/>
                 <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     
