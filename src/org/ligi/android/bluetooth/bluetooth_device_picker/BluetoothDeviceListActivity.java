@@ -27,6 +27,7 @@ import android.widget.AdapterView.OnItemClickListener;
  * 
  * TODO: - store SelectedCount & sort by SelectedCount
  *       - drop devices ( long press )
+ *       - help menu
  * 
  * @author ligi ( aka: Marcus Bueschleb | mail: ligi at ligi dot de )
  *
@@ -73,7 +74,7 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 	}
 
 	public SharedPreferences getSavedDevicesSharedPreferences() {
-		return this.getSharedPreferences("saved_devices", 0);
+		return this.getSharedPreferences("saved_bt_devices", 0);
 	}
 	
 	public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
