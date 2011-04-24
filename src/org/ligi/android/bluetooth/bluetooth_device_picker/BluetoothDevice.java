@@ -16,17 +16,21 @@ public class BluetoothDevice {
 	private boolean saved=false; // remember if it was saved 
 	
 	public BluetoothDevice(RemoteDevice rd,int act_scan_round) {
-		addr=rd.getAddress();
-		setFriendlyName(rd.getFriendlyName());
+		if (rd!=null) {
+			addr=""+rd.getAddress();
+			setFriendlyName(rd.getFriendlyName());
+		} else {
+			addr="null";
+			setFriendlyName("no name"); 
+		}
 		seen_in_round=act_scan_round;
 	}
 	
 	public void setFriendlyName(String new_fn) {
-		if (!new_fn.equals(""))
+		if (!((new_fn==null)||new_fn.equals("")))
 			friendly_name=new_fn;
 		else
-			if (friendly_name.equals(""))
-				friendly_name=getAddr();
+		    friendly_name="no name (mac="+getAddr()+")";
 				
 	}
 
