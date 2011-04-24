@@ -78,6 +78,7 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 	}
 	
 	public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+		stopped=true; // to prevent scan restart 
 		BluetoothDevice bd=(BluetoothDevice)arg0.getAdapter().getItem(pos);
 		SharedPreferences sp=getSavedDevicesSharedPreferences();
 		if (!sp.contains(bd.getAddr()))
@@ -91,9 +92,9 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 	}
 
 	 @Override
-	protected void onDestroy() {
+	protected void onStop() {
 		 stopped=true; // to prevent scan restart 
-		 //LocalDevice.getInstance().stopScan();
+		 LocalDevice.getInstance().stopScan();
 		 progress_dialog.dismiss();
 		 super.onDestroy();
 	}
@@ -111,7 +112,7 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 		@Override
 		public void deviceFound(RemoteDevice remote_device) {
 			progress_dialog.hide();
-			Log.i("Bluetooth Device found: friendly_name=" + remote_device.getFriendlyName() + " / mac=" + remote_device.getAddress() + " / rssi: " + remote_device.getRSSI() );
+			Log.i("Bluetooth Device found - friendly_name=" + remote_device.getFriendlyName() + " / mac=" + remote_device.getAddress() + " / rssi: " + remote_device.getRSSI() );
 			BluetoothArrayAdapter.getInstance().add(new BluetoothDevice(remote_device,scan_round));;
 		}
 
