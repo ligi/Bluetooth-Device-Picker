@@ -1,4 +1,4 @@
-Project which offers an action to pick a bluetooth device. 
+Project which offers an action to pick a bluetooth device on Android. 
 Exposes the action PICK_BLUETOOTH_DEVICE to start the BluetoothDeviceListActivity which scans for Bluetooth Devices, shows them in a ListActivity and returns device info when a device is selected by the user.
 This is done to deduplicate code between APPs - the code is graduated from the DUBwise Project and used in the new DUBwise for UAVTalk APP. 
 Features:
