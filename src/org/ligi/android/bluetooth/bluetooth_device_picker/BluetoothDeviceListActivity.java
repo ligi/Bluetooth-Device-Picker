@@ -108,8 +108,9 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 
 	 @Override
 	protected void onStop() {
-		 stopped=true; // to prevent scan restart 
-		 //LocalDevice.getInstance().stopScan();
+		 stopped=true; // to prevent scan restart
+		 //TODO investigate why this caused problems with leaking rec's - imho bug in lib .. 
+		 //LocalDevice.getInstance().stopScan(); 
 		 progress_dialog.dismiss();
 		 super.onStop();
 	}
