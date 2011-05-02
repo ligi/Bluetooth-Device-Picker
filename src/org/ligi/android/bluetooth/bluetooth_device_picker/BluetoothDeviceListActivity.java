@@ -24,6 +24,8 @@ import it.gerdavax.easybluetooth.ReadyListener;
 import it.gerdavax.easybluetooth.RemoteDevice;
 import it.gerdavax.easybluetooth.ScanListener;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -74,7 +76,23 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 		progress_dialog.setOnCancelListener(this);
 		progress_dialog.setButton(getString(R.string.Cancel), this);
 
-		LocalDevice.getInstance().init(this, new myReadyListener());
+		try {
+			LocalDevice.getInstance().init(this, new myReadyListener());
+		} catch (Exception e) {
+			new AlertDialog.Builder(this)
+				.setTitle(R.string.bt_error_topic)
+				.setMessage(R.string.bt_err_txt)
+				.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+							finish();
+					}
+				})
+				.show();
+			
+			return;
+		}
 		
 		BluetoothArrayAdapter.construct_instance(this, android.R.layout.simple_list_item_1);
 		this.getListView().setAdapter(BluetoothArrayAdapter.getInstance());

@@ -9,4 +9,6 @@
     <string name="Cancel">Cancel</string>
     <string name="OK">ok</string>
     <string name="initial_wait">Waiting for at least one device</string>
+    <string name="bt_error_topic">Bluetooth Error</string>
+    <string name="bt_err_txt">Cannot initialize Bluetooth - thats bad - perhaps you are running the app in a emulator - Bluetooth is not working there. Also there is a dirty hack needed to make it run on devices with Android &lt;2.0 which can cause problems. Anyway sorry for you ..</string>
 </resources>
