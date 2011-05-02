@@ -109,7 +109,7 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 	 @Override
 	protected void onStop() {
 		 stopped=true; // to prevent scan restart 
-		 LocalDevice.getInstance().stopScan();
+		 //LocalDevice.getInstance().stopScan();
 		 progress_dialog.dismiss();
 		 super.onStop();
 	}
