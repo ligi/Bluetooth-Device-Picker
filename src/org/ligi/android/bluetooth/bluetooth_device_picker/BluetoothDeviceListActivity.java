@@ -111,7 +111,7 @@ public class BluetoothDeviceListActivity extends ListActivity implements OnCance
 		 stopped=true; // to prevent scan restart 
 		 LocalDevice.getInstance().stopScan();
 		 progress_dialog.dismiss();
-		 super.onDestroy();
+		 super.onStop();
 	}
 		
 	private class myReadyListener extends ReadyListener {
