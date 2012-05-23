@@ -20,13 +20,14 @@ import org.ligi.tracedroid.TraceDroid;
 import org.ligi.tracedroid.logging.Log;
 import org.ligi.tracedroid.sending.TraceDroidEmailSender;
 
+import com.actionbarsherlock.app.SherlockListActivity;
+
 import it.gerdavax.easybluetooth.LocalDevice;
 import it.gerdavax.easybluetooth.ReadyListener;
 import it.gerdavax.easybluetooth.RemoteDevice;
 import it.gerdavax.easybluetooth.ScanListener;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,7 +51,7 @@ import android.widget.AdapterView.OnItemClickListener;
  *
  * Licence: GPLv3  
  */
-public class BluetoothDeviceListActivity extends ListActivity implements OnCancelListener, OnClickListener,  OnItemClickListener {
+public class BluetoothDeviceListActivity extends SherlockListActivity implements OnCancelListener, OnClickListener,  OnItemClickListener {
 	
 	//private BluetoothArrayAdapter arrayAdapter;
 	private ProgressDialog progress_dialog;
