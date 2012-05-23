@@ -13,8 +13,9 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,                                                  
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA                                                                    
  */
-package org.ligi.android.bluetooth.bluetooth_device_picker;
+package org.ligi.android.bluetooth.device_picker;
 
+import org.ligi.android.bluetooth.device_picker.R;
 import org.ligi.tracedroid.TraceDroid;
 import org.ligi.tracedroid.logging.Log;
 import org.ligi.tracedroid.sending.TraceDroidEmailSender;
