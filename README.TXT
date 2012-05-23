@@ -7,3 +7,7 @@ Features:
 
 The APP uses the lib tracedroid to be able to send debug logs when problems arise and android-bluetooth ( http://android-bluetooth.googlecode.com ) to be able to work with Android <2.0 which has no native Bluetooth-API
 The code is GPLv3.
+
+
+Credits:
+ - Everaldo Coelho for the icon - http://commons.wikimedia.org/wiki/File:Crystal_Project_bluetooth.png
