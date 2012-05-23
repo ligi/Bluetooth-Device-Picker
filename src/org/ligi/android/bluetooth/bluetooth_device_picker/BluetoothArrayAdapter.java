@@ -17,13 +17,10 @@ package org.ligi.android.bluetooth.bluetooth_device_picker;
 
 import java.util.HashMap;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -38,13 +35,11 @@ public class BluetoothArrayAdapter extends ArrayAdapter<BluetoothDevice>{
 
 		private static BluetoothArrayAdapter instance=null;
 		private HashMap<String,Integer> mac2id; // String is mac
-		private Context myContext;
 		private int last_seen_round=-1;
 		
 		public BluetoothArrayAdapter(Context context, int textViewResourceId) {
 			super(context, textViewResourceId);
 			mac2id=new HashMap<String,Integer>();
-			this.myContext=context;
 		}
 		
 		public static BluetoothArrayAdapter getInstance() {
@@ -73,39 +68,21 @@ public class BluetoothArrayAdapter extends ArrayAdapter<BluetoothDevice>{
 		public View getView(int position, View convertView, ViewGroup parent) {
 			BluetoothDevice bd=getItem(position);
 			
-			LinearLayout row=new LinearLayout(myContext);
-			row.setOrientation(LinearLayout.VERTICAL);
+			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LinearLayout row=(LinearLayout)inflater.inflate(R.layout.row, null);
 			
-			LinearLayout name_and_icon=new LinearLayout(myContext);
-			name_and_icon.setOrientation(LinearLayout.HORIZONTAL);
-			
-			TextView friendly_name_tv=new TextView(myContext);
-			
+			TextView friendly_name_tv=(TextView)row.findViewById(android.R.id.text1);
 			friendly_name_tv.setText(bd.getFriendlyName() );
-			friendly_name_tv.setTextSize(TypedValue.COMPLEX_UNIT_MM , 12f); // 1.2cm
-			name_and_icon.addView(friendly_name_tv);
 			
-			ImageView saved_img=new ImageView(myContext);
-			Bitmap orig=BitmapFactory.decodeResource(myContext.getResources(), android.R.drawable.ic_menu_save);
-			saved_img.setImageBitmap(Bitmap.createScaledBitmap(orig, (int)((friendly_name_tv.getTextSize()/orig.getHeight())*orig.getWidth()), (int)friendly_name_tv.getTextSize(),false));
-			
-			if (bd.isSaved())
-				name_and_icon.addView(saved_img);
-			
-			ImageView view_img=new ImageView(myContext);
-			orig=BitmapFactory.decodeResource(myContext.getResources(), android.R.drawable.ic_menu_view);
-			view_img.setImageBitmap(Bitmap.createScaledBitmap(orig, (int)((friendly_name_tv.getTextSize()/orig.getHeight())*orig.getWidth()), (int)friendly_name_tv.getTextSize(),false));
-			
-			if (bd.getSeenRound()>Math.max(last_seen_round-2,0))
-				name_and_icon.addView(view_img);
-			
-			row.addView(name_and_icon);
-			TextView addr_tv=new TextView(myContext);
-			
+			TextView addr_tv=(TextView)row.findViewById(android.R.id.text2);
 			addr_tv.setText(bd.getAddr());
-			addr_tv.setTextSize(TypedValue.COMPLEX_UNIT_MM , 6f); // 1.2cm
+
 			
-			row.addView(addr_tv);
+			if (!bd.isSaved())
+				row.findViewById(R.id.saved).setVisibility(View.GONE);
+			
+			if (bd.getSeenRound()<=Math.max(last_seen_round-2,0))
+				row.findViewById(R.id.visible).setVisibility(View.GONE);
 			
 	        return row;
 		}
