@@ -1,3 +1,5 @@
 bin/
 gen/
 lib/
+build/
+.gradle/
