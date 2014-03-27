@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.5.+'
+        classpath 'com.android.tools.build:gradle:0.9.+'
     }
 }
 
@@ -15,11 +15,17 @@ repositories {
 
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion "17.0.0"
+    compileSdkVersion 19
+    buildToolsVersion "19.0.1"
 
     dependencies {
 	compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'	
+    }
+
+    android {
+      lintOptions {
+          abortOnError false
+      }
     }
 }
 
