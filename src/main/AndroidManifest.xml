@@ -20,7 +20,8 @@
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Sherlock">
+        android:theme="@style/Theme.Sherlock"
+        android:allowBackup="true" >
         <activity android:name="org.ligi.android.bluetooth.device_picker.BluetoothDeviceListActivity">
             <intent-filter>
                 <action android:name="PICK_BLUETOOTH_DEVICE" />
